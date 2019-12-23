@@ -61,12 +61,12 @@ if(${QWT_BUILD_EXAMPLES})
 	get_subdirectories(QWT_EXAMPLES ${qwt_SOURCE_DIR}/examples/)
 	
 	foreach(EXAMPLE ${QWT_EXAMPLES})
-		file(GLOB EXAMPLE_HEADERS ${qwt_SOURCE_DIR}/examples/*.h)
+		file(GLOB EXAMPLE_HEADERS ${qwt_SOURCE_DIR}/examples/${EXAMPLE}/*.h)
 		file(GLOB EXAMPLE_SOURCES ${qwt_SOURCE_DIR}/examples/${EXAMPLE}/*.cpp)
 		if(EXAMPLE_SOURCES)
 			add_executable(qwt-${EXAMPLE} ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES})
 			target_link_libraries(qwt-${EXAMPLE} PRIVATE qwt)
-			set_target_properties(qwt
+			set_target_properties(qwt-${EXAMPLE}
 				PROPERTIES
 				ARCHIVE_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
 				LIBRARY_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
