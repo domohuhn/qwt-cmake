@@ -18,8 +18,8 @@ include(FetchContent)
 
 FetchContent_Declare(
   qwt
-  SVN_REPOSITORY https://svn.code.sf.net/p/qwt/code/trunk
-  SVN_REVISION -r3094
+  SVN_REPOSITORY https://svn.code.sf.net/p/qwt/code/tags/qwt-6.1.4/
+  SVN_REVISION -r2998
 )
 
 FetchContent_GetProperties(qwt)
@@ -28,25 +28,26 @@ if(NOT ${qwt_POPULATED})
 	FetchContent_Populate(qwt)
 endif()
 
-find_package(Qt5 COMPONENTS Widgets)
+find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Concurrent Svg PrintSupport)
 
-file(GLOB QWT_SOURCES ${qwt_SOURCE_DIR}/qwt/src/*.cpp) 
+file(GLOB QWT_SOURCES ${qwt_SOURCE_DIR}/src/*.cpp)
+file(GLOB QWT_HEADERS ${qwt_SOURCE_DIR}/src/*.h)
 
-add_library(qwt ${QWT_SOURCES})
+add_library(qwt ${QWT_HEADERS} ${QWT_SOURCES})
 
 set_target_properties(qwt
     PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
     LIBRARY_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
     RUNTIME_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
+    AUTOMOC ON
 )
 
-target_include_directories(qwt PUBLIC ${qwt_SOURCE_DIR})
+target_include_directories(qwt PUBLIC ${qwt_SOURCE_DIR}/src/)
 
-target_link_libraries(qwt PUBLIC Qt5Widgets)
+target_link_libraries(qwt PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets Qt5::OpenGL Qt5::Concurrent Qt5::Svg Qt5::PrintSupport)
 
 if(${QWT_BUILD_EXAMPLES})
-	set(ADDITIONAL_TARGETS "")
 	macro(GET_SUBDIRECTORIES RESULTVAR DIRECTORY)
 	  file(GLOB DIR_CONTENTS RELATIVE ${DIRECTORY} ${DIRECTORY}/*)
 	  set(${RESULTVAR} "")
@@ -57,17 +58,22 @@ if(${QWT_BUILD_EXAMPLES})
 	  endforeach()
 	endmacro()
 	
-	get_subdirectories(QWT_EXAMPLES ${qwt_SOURCE_DIR}/qwt/examples/)
+	get_subdirectories(QWT_EXAMPLES ${qwt_SOURCE_DIR}/examples/)
 	
 	foreach(EXAMPLE ${QWT_EXAMPLES})
-		file(GLOB EXAMPLE_SOURCES ${qwt_SOURCE_DIR}/qwt/examples/${EXAMPLE}/*.cpp)
+		file(GLOB EXAMPLE_HEADERS ${qwt_SOURCE_DIR}/examples/*.h)
+		file(GLOB EXAMPLE_SOURCES ${qwt_SOURCE_DIR}/examples/${EXAMPLE}/*.cpp)
 		if(EXAMPLE_SOURCES)
-			add_executable(qwt-${EXAMPLE} ${EXAMPLE_SOURCES})
+			add_executable(qwt-${EXAMPLE} ${EXAMPLE_HEADERS} ${EXAMPLE_SOURCES})
 			target_link_libraries(qwt-${EXAMPLE} PRIVATE qwt)
-			list(APPEND ADDITIONAL_TARGETS qwt-${EXAMPLE})
+			set_target_properties(qwt
+				PROPERTIES
+				ARCHIVE_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
+				LIBRARY_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
+				RUNTIME_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
+				AUTOMOC ON
+			)
 		endif()
 	endforeach()
-	
 endif()
 
-set_property(TARGET qwt ${ADDITIONAL_TARGETS} PROPERTY AUTOMOC ON)
