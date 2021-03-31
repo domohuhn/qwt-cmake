@@ -18,8 +18,8 @@ include(FetchContent)
 
 FetchContent_Declare(
   qwt
-  SVN_REPOSITORY https://svn.code.sf.net/p/qwt/code/tags/qwt-6.1.4/
-  SVN_REVISION -r2998
+  SVN_REPOSITORY https://svn.code.sf.net/p/qwt/code/tags/qwt-6.1.6/
+  SVN_REVISION -r3379
 )
 
 FetchContent_GetProperties(qwt)
