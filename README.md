@@ -21,4 +21,6 @@ merge a new qwt release.
  - subversion
  - Qt5
  - CMake 3.11 or later
- 
+
+## License 
+The files are licensed under the BSD 0 clause license.
