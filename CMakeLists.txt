@@ -18,8 +18,9 @@ include(FetchContent)
 
 FetchContent_Declare(
   qwt
-  SVN_REPOSITORY https://svn.code.sf.net/p/qwt/code/tags/qwt-6.1.6/
-  SVN_REVISION -r3379
+  GIT_REPOSITORY https://git.code.sf.net/p/qwt/git
+  GIT_TAG 878e90e5fe02f8e752d5d5eefea629fb4fbe54c0 # version 6.2.1
+  PATCH_COMMAND git apply ${CMAKE_CURRENT_SOURCE_DIR}/qwt-6.2.1.patch --unsafe-paths
 )
 
 FetchContent_GetProperties(qwt)
@@ -32,18 +33,13 @@ find_package(Qt5 COMPONENTS Core Gui Widgets OpenGL Concurrent Svg PrintSupport)
 
 file(GLOB QWT_SOURCES ${qwt_SOURCE_DIR}/src/*.cpp)
 file(GLOB QWT_HEADERS ${qwt_SOURCE_DIR}/src/*.h)
+file(GLOB QWT_CLASS_HEADERS ${qwt_SOURCE_DIR}/classincludes/*)
 
-add_library(qwt ${QWT_HEADERS} ${QWT_SOURCES})
+qt5_wrap_cpp(QWT_SOURCES ${QWT_HEADERS} ${QWT_CLASS_HEADERS})
+add_library(qwt ${QWT_SOURCES})
 
-set_target_properties(qwt
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
-    LIBRARY_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
-    RUNTIME_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
-    AUTOMOC ON
-)
 
-target_include_directories(qwt PUBLIC ${qwt_SOURCE_DIR}/src/)
+target_include_directories(qwt PUBLIC ${qwt_SOURCE_DIR}/src/ ${qwt_SOURCE_DIR}/classincludes/)
 
 target_link_libraries(qwt PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets Qt5::OpenGL Qt5::Concurrent Qt5::Svg Qt5::PrintSupport)
 
@@ -68,9 +64,6 @@ if(${QWT_BUILD_EXAMPLES})
 			target_link_libraries(qwt-${EXAMPLE} PRIVATE qwt)
 			set_target_properties(qwt-${EXAMPLE}
 				PROPERTIES
-				ARCHIVE_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
-				LIBRARY_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
-				RUNTIME_OUTPUT_DIRECTORY "${qwt_BINARY_DIR}"
 				WIN32_EXECUTABLE true
 				AUTOMOC ON
 			)

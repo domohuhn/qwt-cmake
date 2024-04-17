@@ -18,7 +18,7 @@ merge a new qwt release.
 
 ## Dependencies
 
- - subversion
+ - git
  - Qt5
  - CMake 3.11 or later
 

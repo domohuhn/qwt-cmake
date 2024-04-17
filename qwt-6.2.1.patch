@@ -1,0 +1,34 @@
+diff --git a/src/qwt_picker.h b/src/qwt_picker.h
+index 84e67f9..6621d86 100644
+--- a/src/qwt_picker.h
++++ b/src/qwt_picker.h
+@@ -14,6 +14,8 @@
+ #include "qwt_event_pattern.h"
+ 
+ #include <qobject.h>
++#include "QPen"
++#include "QFont"
+ 
+ class QwtPickerMachine;
+ class QwtWidgetOverlay;
+@@ -23,8 +25,6 @@ class QMouseEvent;
+ class QWheelEvent;
+ class QKeyEvent;
+ class QPainter;
+-class QPen;
+-class QFont;
+ class QRegion;
+ class QPainterPath;
+ class QPoint;
+diff --git a/src/qwt_widget_overlay.h b/src/qwt_widget_overlay.h
+index e03c946..0b671db 100644
+--- a/src/qwt_widget_overlay.h
++++ b/src/qwt_widget_overlay.h
+@@ -39,6 +39,7 @@ class QRegion;
+  */
+ class QWT_EXPORT QwtWidgetOverlay : public QWidget
+ {
++  Q_OBJECT
+   public:
+     /*!
+        \brief Mask mode
